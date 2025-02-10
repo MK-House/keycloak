@@ -1,4 +1,4 @@
-name: 'mkhouse-keycloak'
+name: "mkhouse-keycloak"
 
 x-common-props: &common-props
   restart: "unless-stopped"
