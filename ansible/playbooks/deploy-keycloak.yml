@@ -227,6 +227,7 @@
           DB_DATABASE={{ KEYCLOAK_DATABASE_NAME }}
           DB_USER={{ KEYCLOAK_DATABASE_USER }}
           DB_PASSWORD={{ KEYCLOAK_DATABASE_PASSWORD }}
+          HOST_PORT={{ HOST_PORT }}
 
     - name: "Pull Docker Compose services"
       command: |
