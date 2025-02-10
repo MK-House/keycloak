@@ -1,0 +1,73 @@
+name: "Deploy Keycloak"
+run-name: "${{ github.event_name }} by ${{ github.actor }} #${{ github.run_number }}.${{ github.run_attempt }}"
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  deploy-rabbitmq:
+    name: "Deploy Keycloak"
+    runs-on:
+      - "self-hosted"
+    env:
+      ANSIBLE_PROJECT: "${{ vars.ANSIBLE_PROJECT }}"
+      KEYCLOAK_PROJECT: "${{ vars.KEYCLOAK_PROJECT }}"
+      CF_ACCOUNT_ID: "${{ secrets.CF_ACCOUNT_ID }}"
+      CF_TUNNEL_API_TOKEN: "${{ secrets.CF_TUNNEL_API_TOKEN }}"
+      CF_TUNNEL_NAME: "${{ vars.CF_TUNNEL_NAME }}"
+      CF_ZONE_ID: "${{ secrets.CF_ZONE_ID }}"
+      CF_SERVICE: "${{ vars.CF_SERVICE }}"
+      CF_HOSTNAME: "${{ vars.CF_HOSTNAME }}"
+      KEYCLOAK_USER: "${{ vars.KEYCLOAK_USER }}"
+      KEYCLOAK_PASSWORD: "${{ secrets.KEYCLOAK_PASSWORD }}"
+      KEYCLOAK_DATABASE_VENDOR: "${{ vars.KEYCLOAK_DATABASE_VENDOR }}"
+      KEYCLOAK_DATABASE_NAME: "${{ vars.KEYCLOAK_DATABASE_NAME }}"
+      KEYCLOAK_DATABASE_USER: "${{ vars.KEYCLOAK_DATABASE_USER }}"
+      KEYCLOAK_DATABASE_PASSWORD: "${{ secrets.KEYCLOAK_DATABASE_PASSWORD }}"
+
+    steps:
+      - name: "Checkout repository"
+        uses: "actions/checkout@v2"
+      - name: "Install gettext (envsubst)"
+        run: |
+          if command -v apt-get >/dev/null; then
+            sudo apt-get install -y gettext
+          elif command -v yum >/dev/null; then
+            sudo yum install -y gettext
+          elif command -v dnf >/dev/null; then
+            sudo dnf install -y gettext
+          elif command -v pacman >/dev/null; then
+            sudo pacman -Sy --noconfirm gettext
+          elif command -v zypper >/dev/null; then
+            sudo zypper install -y gettext
+          else
+            echo "Unsupported package manager. Please install gettext manually."
+            exit 1
+          fi
+      - name: "Copy project to dropfolder"
+        run: |
+          sudo rm -rf ${ANSIBLE_PROJECT}/_dropfolder/keycloak/*
+          sudo mkdir -p ${ANSIBLE_PROJECT}/_dropfolder/keycloak
+          sudo chmod 0755 ${ANSIBLE_PROJECT}/_dropfolder/keycloak
+          sudo cp -r ./docker/* ${ANSIBLE_PROJECT}/_dropfolder/keycloak/
+      - name: "Run Ansible Playbook"
+        run: |
+          cd ${ANSIBLE_PROJECT}
+          ansible-playbook ${GITHUB_WORKSPACE}/ansible/playbooks/deploy-keycloak.yml \
+            -i ./inventory/hosts.ini \
+            -e ANSIBLE_PROJECT="${ANSIBLE_PROJECT}" \
+            -e KEYCLOAK_PROJECT="${KEYCLOAK_PROJECT}" \
+            -e CF_ACCOUNT_ID="${CF_ACCOUNT_ID}" \
+            -e CF_TUNNEL_API_TOKEN="${CF_TUNNEL_API_TOKEN}" \
+            -e CF_ZONE_ID="${CF_ZONE_ID}" \
+            -e CF_TUNNEL_NAME="${CF_TUNNEL_NAME}" \
+            -e CF_SERVICE="${CF_SERVICE}" \
+            -e CF_HOSTNAME="${CF_HOSTNAME}" \
+            -e KEYCLOAK_USER="${KEYCLOAK_USER}" \
+            -e KEYCLOAK_PASSWORD="${KEYCLOAK_PASSWORD}" \
+            -e KEYCLOAK_DATABASE_VENDOR="${KEYCLOAK_DATABASE_VENDOR}" \
+            -e KEYCLOAK_DATABASE_NAME="${KEYCLOAK_DATABASE_NAME}" \
+            -e KEYCLOAK_DATABASE_USER="${KEYCLOAK_DATABASE_USER}" \
+            -e KEYCLOAK_DATABASE_PASSWORD="${KEYCLOAK_DATABASE_PASSWORD}"
