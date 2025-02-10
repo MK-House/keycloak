@@ -49,10 +49,7 @@ services:
     volumes:
       - mkhouse-keycloak-data:/opt/keycloak/data
     command: |
-      bootstrap-admin \
-        user \
-          --username:env KEYCLOAK_ADMIN \
-          --password:env KEYCLOAK_ADMIN_PASSWORD
+      bootstrap-admin user --username:env KEYCLOAK_ADMIN --password:env KEYCLOAK_ADMIN_PASSWORD
     networks:
       stack-net:
       mkhouse-vpc-net:
