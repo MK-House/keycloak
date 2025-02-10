@@ -46,11 +46,11 @@ services:
     environment:
       KEYCLOAK_USER: "${KEYCLOAK_USER}"
       KEYCLOAK_PASSWORD: "${KEYCLOAK_PASSWORD}"
-      DB_VENDOR: "${KEYCLOAK_DATABASE_VENDOR}"
+      DB_VENDOR: "${DB_VENDOR}"
       DB_ADDR: "mkhouse-keycloak-db"
-      DB_DATABASE: "${KEYCLOAK_DATABASE_NAME}"
-      DB_USER: "${KEYCLOAK_DATABASE_USER}"
-      DB_PASSWORD: "${KEYCLOAK_DATABASE_PASSWORD}"
+      DB_DATABASE: "${DB_DATABASE}"
+      DB_USER: "${DB_USER}"
+      DB_PASSWORD: "${DB_PASSWORD}"
     volumes:
       - mkhouse-keycloak-data:/opt/jboss/keycloak/standalone/data
     networks:
