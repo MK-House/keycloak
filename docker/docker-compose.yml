@@ -40,7 +40,7 @@ services:
       mkhouse-db-net:
 
   mkhouse-keycloak:
-    image: "jboss/keycloak:latest"
+    image: "quay.io/keycloak/keycloak:latest"
     container_name: "mkhouse-keycloak"
     hostname: "mkhouse-keycloak"
     environment:
@@ -52,7 +52,7 @@ services:
       DB_USER: "${DB_USER}"
       DB_PASSWORD: "${DB_PASSWORD}"
     volumes:
-      - mkhouse-keycloak-data:/opt/jboss/keycloak/standalone/data
+      - mkhouse-keycloak-data:/opt/keycloak/data
     networks:
       stack-net:
       mkhouse-vpc-net:
