@@ -48,7 +48,12 @@ services:
       DB_PASSWORD: "${DB_PASSWORD}"
     volumes:
       - mkhouse-keycloak-data:/opt/keycloak/data
-    command: "start-dev"
+    command: |
+      bin/kc.sh /
+        bootstrap-admin /
+          user /
+            --username:env KEYCLOAK_ADMIN /
+            --password:env KEYCLOAK_ADMIN_PASSWORD
     networks:
       stack-net:
       mkhouse-vpc-net:
