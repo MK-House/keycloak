@@ -48,7 +48,7 @@ services:
       DB_PASSWORD: "${DB_PASSWORD}"
     volumes:
       - mkhouse-keycloak-data:/opt/keycloak/data
-    command: ["/bin/sh", "-c", "kc.sh build && kc.sh start --optimized"]
+    command: "start-dev"
     networks:
       stack-net:
       mkhouse-vpc-net:
