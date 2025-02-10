@@ -249,6 +249,37 @@
       command: |
         docker image prune --force
 
+    - name: "Wait for Keycloak to be available"
+      uri:
+        url: "http://localhost:{{ HOST_PORT }}/auth"
+        status_code: 200
+      register: result
+      until: result.status == 200
+      retries: 30
+      delay: 10
+
+    - name: "Check if Keycloak admin user exists"
+      command: >
+        /opt/keycloak/bin/kcadm.sh get users -r master -q username={{ KEYCLOAK_USER }}
+      register: user_check
+      environment:
+        KEYCLOAK_USER: "{{ KEYCLOAK_USER }}"
+        KEYCLOAK_PASSWORD: "{{ KEYCLOAK_PASSWORD }}"
+      args:
+        chdir: "{{ KEYCLOAK_PROJECT }}"
+      when: result.status == 200
+      failed_when: user_check.rc not in [0, 1]
+
+    - name: "Create Keycloak admin user"
+      command: >
+        /opt/keycloak/bin/kcadm.sh create users -r master -s username={{ KEYCLOAK_USER }} -s enabled=true -s email={{ KEYCLOAK_USER }}@example.com -s firstName=Admin -s lastName=User -s credentials='[{{"type":"password","value":"{{ KEYCLOAK_PASSWORD }}"}}]'
+      environment:
+        KEYCLOAK_USER: "{{ KEYCLOAK_USER }}"
+        KEYCLOAK_PASSWORD: "{{ KEYCLOAK_PASSWORD }}"
+      args:
+        chdir: "{{ KEYCLOAK_PROJECT }}"
+      when: result.status == 200 and user_check.rc == 1
+
 - name: "Release Keycloak"
   hosts: "tankian.mkh"
   become: true
