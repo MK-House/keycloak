@@ -49,7 +49,7 @@ services:
     volumes:
       - mkhouse-keycloak-data:/opt/keycloak/data
     command: |
-      bin/kc.sh /
+      kc.sh /
         bootstrap-admin /
           user /
             --username:env KEYCLOAK_ADMIN /
