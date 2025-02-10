@@ -44,8 +44,8 @@ services:
     container_name: "mkhouse-keycloak"
     hostname: "mkhouse-keycloak"
     environment:
-      KEYCLOAK_USER: "${KEYCLOAK_USER}"
-      KEYCLOAK_PASSWORD: "${KEYCLOAK_PASSWORD}"
+      KEYCLOAK_ADMIN: "${KEYCLOAK_USER}"
+      KEYCLOAK_ADMIN_PASSWORD: "${KEYCLOAK_PASSWORD}"
       DB_VENDOR: "${DB_VENDOR}"
       DB_ADDR: "mkhouse-keycloak-db"
       DB_DATABASE: "${DB_DATABASE}"
@@ -53,7 +53,7 @@ services:
       DB_PASSWORD: "${DB_PASSWORD}"
     volumes:
       - mkhouse-keycloak-data:/opt/keycloak/data
-    command: ["start-dev"]
+    command: ["start-dev", "--bootstrap-admin"]
     networks:
       stack-net:
       mkhouse-vpc-net:
