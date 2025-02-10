@@ -48,8 +48,7 @@ services:
       DB_PASSWORD: "${DB_PASSWORD}"
     volumes:
       - mkhouse-keycloak-data:/opt/keycloak/data
-    entrypoint: ["/bin/bash", "-c"]
-    command: ["if [ ! -f /opt/keycloak/data/.built ]; then kc.sh build && touch /opt/keycloak/data/.built; fi && kc.sh start --optimized"]
+    command: "start --optimized"
     networks:
       stack-net:
       mkhouse-vpc-net:
