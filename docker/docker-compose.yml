@@ -50,8 +50,6 @@ services:
       - mkhouse-keycloak-data:/opt/keycloak/data
     ports:
       - "${HOST_PORT}:8080"
-    command: |
-      bootstrap-admin user --username:env KEYCLOAK_ADMIN --password:env KEYCLOAK_ADMIN_PASSWORD
     networks:
       stack-net:
       mkhouse-vpc-net:
