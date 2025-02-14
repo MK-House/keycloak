@@ -3,8 +3,8 @@ name: "mkhouse-keycloak"
 x-common-props: &common-props
   restart: "unless-stopped"
   dns:
-    - 1.1.1.1
-    - 4.4.4.4
+    - "1.1.1.1"
+    - "4.4.4.4"
   environment:
     PUID: "1000"
     PGID: "1000"
@@ -13,7 +13,7 @@ x-common-props: &common-props
     - "/etc/localtime:/etc/localtime:ro"
     - "/var/run/docker.sock:/var/run/docker.sock:ro"
   extra_hosts:
-      - host.docker.internal:host-gateway
+    - "host.docker.internal:host-gateway"
   networks:
     stack-net:
 
@@ -29,7 +29,7 @@ services:
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
     volumes:
-      - mkhouse-keycloak-db-data:/var/lib/postgresql/data
+      - "mkhouse-keycloak-db-data:/var/lib/postgresql/data"
     networks:
       stack-net:
       mkhouse-db-net:
@@ -49,7 +49,7 @@ services:
     command: |
       start-dev
     volumes:
-      - mkhouse-keycloak-data:/opt/keycloak/data
+      - "mkhouse-keycloak-data:/opt/keycloak/data"
     ports:
       - "${HOST_PORT}:8080"
     networks:
